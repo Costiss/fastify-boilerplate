@@ -8,7 +8,7 @@ export const OpenAPIFastifyPlugin = fp(async (fastify) => {
         transform: jsonSchemaTransform,
         openapi: {
             info: {
-                title: 'My API',
+                title: 'service-name',
                 description: 'API documentation',
                 version: '1.0.0'
             },

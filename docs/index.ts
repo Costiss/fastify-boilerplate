@@ -1,7 +1,8 @@
-import server from '../src/app';
 import fs from 'fs';
 import path from 'path';
+import getServer from '../src/app';
 
+const server = await getServer();
 await server.ready();
 
 const schema = JSON.stringify(server.swagger());

@@ -1,11 +1,15 @@
 import Fastify from 'fastify';
-import { logger } from './infra/logger';
+import { Logger } from './infra/logger';
 import { DomainApp } from './domain';
 import { InfraestructurePlugin } from './infra';
+import { RestAPIModule } from './api';
 
-const server = Fastify({ logger: logger, disableRequestLogging: true });
+export default async function getServer() {
+    const server = Fastify({ logger: Logger, disableRequestLogging: true });
 
-await server.register(InfraestructurePlugin);
-await server.register(DomainApp);
+    await server.register(InfraestructurePlugin);
+    await server.register(DomainApp);
+    await server.register(RestAPIModule);
 
-export default server;
+    return server;
+}

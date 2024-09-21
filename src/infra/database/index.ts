@@ -1,19 +1,34 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { Client } from 'pg';
-import { getEnv } from '../../domain/utils/env';
+import pg from 'pg';
 import fp from 'fastify-plugin';
-import * as schema from '../../schema/schema';
-import { asValue } from 'awilix';
+import * as schema from '@schema/schema';
+import { asFunction } from 'awilix';
+import { getEnv } from 'src/utils/env.utils';
 
-const client = new Client({
-    connectionString: getEnv('DATABASE_URL')
-});
-export type Database = typeof db;
-export const db = drizzle(client, { schema });
+async function getDatabase(connectionString: string) {
+    const client = new pg.Pool({
+        connectionString,
+        max: 5,
+        min: 1,
+        connectionTimeoutMillis: 5000,
+        idleTimeoutMillis: 10000,
+        allowExitOnIdle: true,
+        maxUses: 50
+    });
 
-await client.connect();
+    const db = drizzle(client, { schema });
+    await client.connect();
+    return { db, client };
+}
 
-export const DatabaseFastifyPlugin = fp((fastify, _, done) => {
-    fastify.diContainer.register({ db: asValue(db) });
-    done();
+export type Database = Awaited<ReturnType<typeof getDatabase>>['db'];
+
+export const DatabaseFastifyPlugin = fp(async (fastify) => {
+    try {
+        const { db } = await getDatabase(getEnv('DATABASE_URL'));
+        fastify.diContainer.register({ db: asFunction(() => db) });
+    } catch (error) {
+        fastify.log.error(error);
+        fastify.diContainer.register({ db: asFunction(() => null as never) });
+    }
 });

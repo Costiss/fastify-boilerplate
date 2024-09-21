@@ -23,6 +23,30 @@
         "noUnusedLocals": false,
         "noUnusedParameters": false,
         "noPropertyAccessFromIndexSignature": false,
+        "baseUrl": "./",
+        "paths": {
+            "@infra": [
+                "src/infra/"
+            ],
+            "@infra/*": [
+                "src/infra/*"
+            ],
+            "@domain": [
+                "src/domain/"
+            ],
+            "@domain/*": [
+                "src/domain/*"
+            ],
+            "@schema": [
+                "src/schema/"
+            ],
+            "@schema/*": [
+                "src/schema/*"
+            ],
+            "@utils/*": [
+                "src/utils/*"
+            ]
+        }
     },
     "include": [
         "src",

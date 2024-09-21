@@ -3,12 +3,7 @@ import fp from 'fastify-plugin';
 export const LoggerFastifyPlugin = fp((fastify, _, done) => {
     fastify.addHook('onResponse', (request, response, done) => {
         const userAgent = request.headers['user-agent'];
-        if (userAgent?.includes('kube-probe') || userAgent?.includes('Prometheus')) {
-            done();
-            return;
-        }
-
-        const elapsed = response.elapsedTime;
+        const elapsed = response.elapsedTime || 0;
         const fullpath = `${request.protocol}://${request.headers.host || request.hostname}${request.originalUrl}`;
         request.log.info(
             {
@@ -17,7 +12,7 @@ export const LoggerFastifyPlugin = fp((fastify, _, done) => {
                     requestMethod: request.method,
                     requestUrl: fullpath,
                     status: response.statusCode,
-                    userAgent: request.headers['user-agent']
+                    userAgent
                 },
                 path: request.originalUrl
             },

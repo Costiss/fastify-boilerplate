@@ -1,10 +1,11 @@
 import '@fastify/awilix';
-import type { UserService } from './domain/users/user.service';
+import { AwilixContainer } from 'awilix';
 import type { Database } from './infra/database';
+import type { InfraCradle } from './infra';
 
 declare module '@fastify/awilix' {
     interface Cradle {
         db: Database;
-        userService: InstanceType<UserService>;
+        infra: AwilixContainer<InfraCradle>;
     }
 }

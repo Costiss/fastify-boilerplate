@@ -1,7 +1,7 @@
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 
-const OPENAPI_TAGS = ['healthcheck'];
+const OPENAPI_TAGS = ['infra'];
 
 export const HealthcheckRoute: FastifyPluginCallbackZod = (fastify, _, done) => {
     fastify.route({

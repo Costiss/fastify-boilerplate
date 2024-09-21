@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
-import { UsersModule } from './users';
+import { UserDomain } from './user';
 
 export const DomainApp: FastifyPluginAsyncZod = async (fastify) => {
-    await fastify.register(UsersModule);
+    await fastify.register(UserDomain);
 };

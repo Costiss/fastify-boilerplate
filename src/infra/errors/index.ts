@@ -23,8 +23,13 @@ export const BadRequestResponseSchema = z.array(
 
 export const ErrorsHandlerFastifyPlugin = fp((fastify, _, done) => {
     fastify.setErrorHandler(async (error, _, reply) => {
-        if (error instanceof HttpError) {
-            return reply.code(error.statusCode).send(error.payload as never);
+        if (error.name === 'HttpError' || error instanceof HttpError) {
+            const httpError = error as HttpError;
+            return reply.code(httpError.statusCode).send({
+                message: httpError.message,
+                code: httpError.code,
+                ...(httpError.payload ? httpError.payload : {})
+            });
         } else if (error.name === ZodError.name) {
             return reply
                 .code(error.statusCode ?? 400)
